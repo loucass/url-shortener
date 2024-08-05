@@ -7,7 +7,7 @@ const app = express();
 
 // encryption in one way
 
-const encrypt = (text) => createHash("md5").update(text).digest("hex");
+const encrypt = (text) => createHash("sha256").update(text).digest("hex");
 
 // ensure the valid url
 
@@ -58,7 +58,7 @@ app.post("/add", (MReq, MRes) => {
     });
     connection.query(
       `SELECT * FROM url_shorter WHERE Main_URL= ?`,
-      [rq.body.theUrl],
+      [MReq.body.theUrl],
       (err, res, field) => {
         if (err) {
           return console.error("Error on connecting:", err.message);
@@ -71,14 +71,14 @@ app.post("/add", (MReq, MRes) => {
         const insertQuery = `INSERT INTO url_shorter VALUES (null , ?, ?)`;
         connection.query(
           insertQuery,
-          [rq.body.theUrl, encrypt(rq.body.theUrl)],
+          [MReq.body.theUrl, encrypt(MReq.body.theUrl)],
           (err) => {
             if (err) {
               return console.error("Error executing query:", err.message);
             }
             MRes.render("handle", {
               title: "done",
-              content: "http://localhost:8081/" + encrypt(rq.body.theUrl),
+              content: "http://localhost:8081/" + encrypt(MReq.body.theUrl),
               color: "success",
             });
             MRes.end();
@@ -152,7 +152,7 @@ app.use((MReq, MRes) => {
 
 app.listen(8081, () =>
   console.log(
-    `Example app listening on port ${8081}!\nthe server runs on localhost:`,
+    `url shortener app listening on port ${8081}!\nthe server runs on localhost:`,
     8081
   )
 );

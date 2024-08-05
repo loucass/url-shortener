@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap.css">
+    <script src="./search.js" defer></script>
     <title>search for url</title>
     <style>
         body {
@@ -79,6 +80,11 @@
 <body>
     <div class="container">
         <div class="main-body">
+            <nav aria-label="breadcrumb" class="main-breadcrumb d-flex">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/add">Home</a></li>/
+                </ol>
+            </nav>
             <div class="gutters-sm">
                 <div class="card">
                     <div class="card-body">
@@ -90,28 +96,6 @@
             </div>
         </div>
     </div>
-    <script>
-        search.oninput = () => {
-            let request = new XMLHttpRequest();
-            request.onload = () => {
-                if (request.status == 200 && request.readyState == 4) {
-                    let resD = JSON.parse(request.responseText);
-                    if (resD.content.length > 0) {
-                        results.innerHTML = ""
-                        resD.content.forEach(element => {
-                            results.innerHTML += `${element.Main_URL} : <a href="/` + element.Shorter_URL + `" class='text-info'>${element.Shorter_URL}</a> `
-                        });
-                    }
-                }
-            };
-            let d = JSON.stringify({
-                content: search.value.length > 0 ? search.value : null,
-            });
-            request.open("POST", "/search");
-            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            request.send(d);
-        };
-    </script>
 </body>
 
 </html>
